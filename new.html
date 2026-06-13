@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Malik's Book Sharing Portal | Free Academic Resources</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        }
+
+        /* Dual vibrant gradient background */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #1a2c3e;
+            line-height: 1.5;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* main container */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(3px);
+            border-radius: 2rem;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.35);
+        }
+
+        /* header with malik branding */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: linear-gradient(120deg, #ffe6f0, #fff0e6, #e6f0ff);
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #c0392b, #e67e22, #f39c12, #8e44ad);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            font-weight: 800;
+        }
+        .hero h1::before {
+            content: "📚 ";
+        }
+        .hero .tagline {
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #2c3e50, #4a6741);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        .hero .description {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: inline-block;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin-top: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .hero .description span {
+            background: linear-gradient(135deg, #e74c3c, #e67e22);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+
+        /* search + filter bar */
+        .search-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(115deg, #ffffff, #f8f9ff);
+            padding: 1rem 1.5rem;
+            border-radius: 60px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(103, 126, 234, 0.2);
+        }
+        .search-input-wrapper {
+            flex: 3;
+            min-width: 200px;
+        }
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #d0d9f0;
+            border-radius: 40px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+            background: white;
+        }
+        .search-input-wrapper input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-group select, .filter-group .clear-filter {
+            background: linear-gradient(135deg, #ffffff, #f5f3ff);
+            border: 1px solid #cdd6f0;
+            padding: 0.6rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .filter-group select:hover, .filter-group .clear-filter:hover {
+            background: linear-gradient(135deg, #edeef8, #e6e2ff);
+            border-color: #764ba2;
+        }
+        .clear-filter {
+            background: linear-gradient(135deg, #ffe6f0, #ffd9e8);
+        }
+
+        /* resource grid */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.6rem;
+            margin: 2rem 0;
+        }
+
+        /* book card with gradient accents */
+        .book-card {
+            background: linear-gradient(145deg, #ffffff, #fefcff);
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.2rem 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 24px -12px rgba(0,0,0,0.15);
+            border: 1px solid rgba(118, 75, 162, 0.15);
+            display: flex;
+            flex-direction: column;
+        }
+        .book-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 35px -14px rgba(118, 75, 162, 0.3);
+            border-color: rgba(118, 75, 162, 0.4);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+        .format-badge {
+            display: inline-flex;
+            padding: 0.25rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .format-badge.pdf {
+            background: linear-gradient(135deg, #ffe0e0, #ffc0c0);
+            color: #b91c1c;
+        }
+        .format-badge.ppt {
+            background: linear-gradient(135deg, #fff0db, #ffe2b5);
+            color: #c2410c;
+        }
+        .category-tag {
+            background: linear-gradient(135deg, #f3e8ff, #e9dcff);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #6b3fa0;
+        }
+        .book-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0.6rem 0 0.3rem;
+            background: linear-gradient(135deg, #1e2a3a, #2c3e50);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .book-meta {
+            font-size: 0.8rem;
+            color: #5a6e7c;
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .book-subject {
+            background: #f0eef7;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #4a3772;
+        }
+        .book-desc {
+            font-size: 0.85rem;
+            color: #334155;
+            margin: 0.6rem 0;
+            flex-grow: 1;
+            line-height: 1.4;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(115deg, #8e44ad, #6c3483);
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-decoration: none;
+            margin-top: 0.8rem;
+            width: 100%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .download-btn:hover {
+            background: linear-gradient(115deg, #7d3c98, #5b2c6f);
+            transform: scale(0.97);
+        }
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #fff9f0, #fff2e5);
+            border-radius: 2rem;
+            color: #8e44ad;
+            font-weight: 500;
+        }
+
+        /* contribution portal - google form embed */
+        .contribution-section {
+            background: linear-gradient(125deg, #fef9ff, #f5efff);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin-top: 2.5rem;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+            border: 1px solid #dcc6f0;
+        }
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #b34180, #8e44ad, #d35400);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .google-form-container {
+            background: rgba(255,255,255,0.92);
+            border-radius: 1.5rem;
+            padding: 0.8rem;
+            margin-top: 0.8rem;
+            border: 1px solid #e0cdf5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .google-form-container iframe {
+            width: 100%;
+            height: 750px;
+            border: none;
+            border-radius: 1rem;
+        }
+        .drive-folder-info {
+            background: linear-gradient(115deg, #eef2ff, #e8e0fc);
+            padding: 1rem;
+            border-radius: 1.3rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            border-left: 5px solid #8e44ad;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .folder-link {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+        .btn-copy {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-copy:hover {
+            background: linear-gradient(135deg, #5d6d7e, #1f2c38);
+        }
+        .note {
+            font-size: 0.75rem;
+            background: linear-gradient(135deg, #fff8e7, #fff2dd);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            color: #8e44ad;
+            margin-top: 0.8rem;
+            text-align: center;
+        }
+        @media (max-width: 720px) {
+            .app-container {
+                padding: 1rem;
+            }
+            .search-bar {
+                border-radius: 1.5rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .google-form-container iframe {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="hero">
+        <h1>Malik's Book Sharing Portal</h1>
+        <div class="tagline">✨ Empower Learning • Share Knowledge • Unlock Success ✨</div>
+        <div class="description">📖 <span>What you'll find here:</span> Textbooks | Past Papers | Lecture Slides | Notes | Solved Assignments — All 100% free for students</div>
+    </div>
+
+    <!-- search + filter tools -->
+    <div class="search-bar">
+        <div class="search-input-wrapper">
+            <input type="text" id="searchInput" placeholder="🔍 Search by title, subject, author, topic..." autocomplete="off">
+        </div>
+        <div class="filter-group">
+            <select id="categoryFilter">
+                <option value="all">📌 All Categories</option>
+                <option value="Computer">💻 Computer Science</option>
+                <option value="Science">🔬 General Science</option>
+                <option value="Social">🌍 Social Studies</option>
+                <option value="Automotive">🚗 Automotive</option>
+                <option value="Space">🚀 Space & Astronomy</option>
+                <option value="Novel">📖 Novel / Fiction</option>
+                <option value="Story">✨ Story Books</option>
+                <option value="Poetry">🎭 Poetry</option>
+                <option value="Urdu">🕌 Urdu Literature</option>
+                <option value="English">🇬🇧 English</option>
+                <option value="Class 10th">🎓 Class 10th</option>
+                <option value="2nd Year">📘 2nd Year (Intermediate)</option>
+                <option value="Biology">🧬 Biology</option>
+                <option value="Physics">⚛️ Physics</option>
+                <option value="Mathematics">📐 Mathematics</option>
+            </select>
+            <select id="classLevelFilter">
+                <option value="all">🎯 All Levels / Classes</option>
+                <option value="Class 9th">Class 9th</option>
+                <option value="Class 10th">Class 10th (Matric)</option>
+                <option value="1st Year">1st Year (FSc/FA)</option>
+                <option value="2nd Year">2nd Year (FSc/FA)</option>
+                <option value="Graduate">Graduate / Bachelor</option>
+                <option value="Other">Other / General</option>
+            </select>
+            <select id="formatFilter">
+                <option value="all">📄 All Formats</option>
+                <option value="PDF">PDF Document</option>
+                <option value="PPT">PPT / PPTX Slide</option>
+            </select>
+            <button id="clearFiltersBtn" class="clear-filter">✖ Clear Filters</button>
+        </div>
+    </div>
+
+    <!-- dynamic resource grid -->
+    <div id="resourceGrid" class="resource-grid">
+        <div class="empty-message">🌟 Loading Malik's Library resources...</div>
+    </div>
+
+    <!-- Contribution Portal - Google Form + Drive Folder Integration -->
+    <div class="contribution-section">
+        <div class="section-title">📤 Contribute & Build the Community</div>
+        <p style="margin-bottom: 0.8rem;">🚀 Got notes, past papers, or a helpful PPT? Use the form below to upload directly. <strong>Files go directly to Malik's Google Drive and will appear here after approval.</strong></p>
+        
+        <!-- Google Form Embed with File Upload Capability -->
+        <div class="google-form-container">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScGm77SUbQTYZ_jvkSBV_4s54NMmZ1fUpi6B2JhNWxN-buFAA/viewform?embedded=true" 
+                    title="Malik's Book Share Submission Form">
+                Loading submission form...
+            </iframe>
+        </div>
+        
+        <!-- Public Drive Folder Info - Your shared folder -->
+        <div class="drive-folder-info">
+            <span>📁 <strong>Public Resource Drive:</strong> All approved books are stored here</span>
+            <div class="folder-link" id="driveFolderLink">https://drive.google.com/drive/folders/10zpuLcz1fanuI6T7z_CsihIH8Ln5xZuX</div>
+            <button class="btn-copy" id="copyDriveLinkBtn">📋 Copy Folder Link</button>
+        </div>
+        <div class="note">⭐ How it works: Fill the form → Upload PDF/PPT from your device → Files auto-save to Malik's Drive → After review, your resource appears in search results above!</div>
+    </div>
+</div>
+
+<script>
+    // ========== CONFIGURATION ==========
+    // Your Google Drive Public Folder ID (for displaying in portal)
+    const DRIVE_FOLDER_ID = "10zpuLcz1fanuI6T7z_CsihIH8Ln5xZuX";
+    const DRIVE_FOLDER_LINK = "https://drive.google.com/drive/folders/10zpuLcz1fanuI6T7z_CsihIH8Ln5xZuX";
+    
+    // Google Sheet CSV URL - Replace this with your published sheet CSV link
+    // IMPORTANT: After publishing your sheet, paste the CSV link below
+    let SHEET_CSV_URL = "";  // 👈 PASTE YOUR GOOGLE SHEET CSV LINK HERE
+    
+    // 🌟 Static Demo Resources (these will merge with live sheet data)
+    let resources = [
+        { id: "static1", format: "PDF", title: "Computer Science: Algorithms & Data Structures", author: "Malik Abdul Rehman", category: "Computer", classLevel: "2nd Year", subject: "CS", description: "Complete chapter-wise notes with solved past paper questions.", fileUrl: DRIVE_FOLDER_LINK, tags: "programming dsa" },
+        { id: "static2", format: "PPT", title: "Introduction to Artificial Intelligence (Slides)", author: "Prof. Zainab", category: "Computer", classLevel: "Graduate", subject: "AI", description: "Neural networks, deep learning basics, and ML algorithms.", fileUrl: DRIVE_FOLDER_LINK, tags: "ai ml ppt" },
+        { id: "static3", format: "PDF", title: "2nd Year Physics Past Papers (2015-2024)", author: "Board of Intermediate", category: "Physics", classLevel: "2nd Year", subject: "Physics", description: "Solved numericals, short questions, and past paper pattern.", fileUrl: DRIVE_FOLDER_LINK, tags: "exam pastpapers" },
+        { id: "static4", format: "PDF", title: "Biology Notes: Human Anatomy", author: "Dr. Sana Khalid", category: "Biology", classLevel: "Class 10th", subject: "Biology", description: "Diagrams, full chapter summaries, and important MCQs.", fileUrl: DRIVE_FOLDER_LINK, tags: "biology anatomy" },
+        { id: "static5", format: "PPT", title: "Space Exploration Milestones", author: "NASA Education", category: "Space", classLevel: "General", subject: "Astronomy", description: "Engaging presentation about rockets, planets, and future missions.", fileUrl: DRIVE_FOLDER_LINK, tags: "space astronomy" },
+        { id: "static6", format: "PDF", title: "Urdu Adab (Class 10th & 2nd Year)", author: "Punjab Curriculum", category: "Urdu", classLevel: "Class 10th", subject: "Urdu", description: "Poetry, ghazals, tashreeh, and past papers.", fileUrl: DRIVE_FOLDER_LINK, tags: "urdu literature" },
+        { id: "static7", format: "PDF", title: "English Grammar Complete Handbook", author: "Wren & Martin", category: "English", classLevel: "Graduate", subject: "English", description: "Detailed grammar rules, essays, and composition.", fileUrl: DRIVE_FOLDER_LINK, tags: "english grammar" },
+        { id: "static8", format: "PPT", title: "Chemical Reactions & Equations", author: "Science Dept", category: "Science", classLevel: "Class 10th", subject: "Chemistry", description: "Interactive slides with examples and balancing equations.", fileUrl: DRIVE_FOLDER_LINK, tags: "chemistry reactions" }
+    ];
+    
+    // Helper: render resource grid with filters
+    function renderResources() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const categoryVal = document.getElementById('categoryFilter').value;
+        const classVal = document.getElementById('classLevelFilter').value;
+        const formatVal = document.getElementById('formatFilter').value;
+        
+        let filtered = resources.filter(res => {
+            const searchable = (res.title + ' ' + res.author + ' ' + res.subject + ' ' + (res.description || '') + ' ' + (res.tags || '')).toLowerCase();
+            if (searchTerm && !searchable.includes(searchTerm)) return false;
+            if (categoryVal !== 'all' && res.category !== categoryVal) return false;
+            if (classVal !== 'all' && res.classLevel !== classVal && !(classVal === 'Other' && !res.classLevel)) {
+                if (res.classLevel !== classVal) return false;
+            }
+            if (formatVal !== 'all' && res.format !== formatVal) return false;
+            return true;
+        });
+        
+        const grid = document.getElementById('resourceGrid');
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div class="empty-message">📭 No matching resources found — Be the first to contribute using the Google Form above! 📤</div>`;
+            return;
+        }
+        
+        grid.innerHTML = filtered.map(res => `
+            <div class="book-card">
+                <div class="card-header">
+                    <span class="format-badge ${res.format.toLowerCase()}">${res.format}</span>
+                    <span class="category-tag">${escapeHtml(res.category)}</span>
+                </div>
+                <div class="book-title">${escapeHtml(res.title)}</div>
+                <div class="book-meta">
+                    <span>👤 ${escapeHtml(res.author || 'Community Contributor')}</span>
+                    ${res.classLevel ? `<span>🎓 ${escapeHtml(res.classLevel)}</span>` : ''}
+                    ${res.subject ? `<span class="book-subject">📚 ${escapeHtml(res.subject)}</span>` : ''}
+                </div>
+                <div class="book-desc">${escapeHtml(res.description || 'Shared by a student to help others.')}</div>
+                <button class="download-btn" data-url="${escapeHtml(res.fileUrl)}" data-title="${escapeHtml(res.title)}">
+                    ⬇️ Download ${res.format}
+                </button>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const url = btn.getAttribute('data-url');
+                const title = btn.getAttribute('data-title');
+                if (url && url !== '#') {
+                    window.open(url, '_blank');
+                } else {
+                    alert(`📥 "${title}" — File link will be available soon. Visit the Google Drive folder to access resources.`);
+                }
+            });
+        });
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Fetch from Google Sheet CSV if URL provided
+    function fetchFromGoogleSheet() {
+        if (SHEET_CSV_URL && SHEET_CSV_URL.trim() !== "") {
+            fetch(SHEET_CSV_URL)
+                .then(response => response.text())
+                .then(csvText => {
+                    const rows = csvText.split(/\r?\n/).slice(1);
+                    const newResources = [];
+                    rows.forEach(row => {
+                        const cols = row.split(',');
+                        if (cols.length >= 8) {
+                            let timestamp = cols[0] || "";
+                            let title = (cols[1] || "").replace(/"/g, '').trim();
+                            let author = (cols[2] || "").replace(/"/g, '').trim() || "Anonymous";
+                            let category = (cols[3] || "").replace(/"/g, '').trim() || "General";
+                            let classLevel = (cols[4] || "").replace(/"/g, '').trim() || "General";
+                            let subject = (cols[5] || "").replace(/"/g, '').trim();
+                            let format = (cols[6] || "").replace(/"/g, '').toUpperCase().trim();
+                            let description = (cols[7] || "").replace(/"/g, '').trim();
+                            let fileUrl = (cols[8] || "").replace(/"/g, '').trim();
+                            let status = (cols[9] || "").replace(/"/g, '').trim();
+                            
+                            // Only show Approved or Published resources
+                            if (title && (format === "PDF" || format === "PPT") && fileUrl && (status === "Approved" || status === "Published")) {
+                                newResources.push({
+                                    id: "sheet_"+Date.now()+Math.random(),
+                                    format: format,
+                                    title: title,
+                                    author: author,
+                                    category: category,
+                                    classLevel: classLevel,
+                                    subject: subject,
+                                    description: description,
+                                    fileUrl: fileUrl || DRIVE_FOLDER_LINK,
+                                    tags: (title+subject+category).toLowerCase()
+                                });
+                            }
+                        }
+                    });
+                    if (newResources.length > 0) {
+                        resources = [...newResources, ...resources];
+                        renderResources();
+                    }
+                })
+                .catch(err => console.warn("Sheet fetch optional, using demo data:", err));
+        }
+    }
+    
+    // Clear all filters
+    function clearAllFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('categoryFilter').value = 'all';
+        document.getElementById('classLevelFilter').value = 'all';
+        document.getElementById('formatFilter').value = 'all';
+        renderResources();
+    }
+    
+    // Copy Drive Folder Link
+    document.getElementById('copyDriveLinkBtn')?.addEventListener('click', () => {
+        navigator.clipboard.writeText(DRIVE_FOLDER_LINK);
+        alert("📁 Google Drive folder link copied! Share this with students to view all approved resources.");
+    });
+    
+    // Event Listeners
+    document.getElementById('searchInput').addEventListener('input', () => renderResources());
+    document.getElementById('categoryFilter').addEventListener('change', () => renderResources());
+    document.getElementById('classLevelFilter').addEventListener('change', () => renderResources());
+    document.getElementById('formatFilter').addEventListener('change', () => renderResources());
+    document.getElementById('clearFiltersBtn').addEventListener('click', clearAllFilters);
+    
+    // Initial load
+    renderResources();
+    fetchFromGoogleSheet();
+    
+    console.log("🎓 Malik's Book Portal Active!");
+    console.log("📁 Public Drive Folder ID:", DRIVE_FOLDER_ID);
+    console.log("📝 To enable live data: Publish your Google Sheet as CSV and set SHEET_CSV_URL");
+</script>
+</body>
+</html>
